@@ -1,75 +1,72 @@
-# React + TypeScript + Vite
+# Order Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Web application for managing and tracking orders. It allows registering new orders, viewing them in a table, and updating their status.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Order list**: customer, item, quantity, price, subtotal (price × quantity), and status.
+- **Order creation** via a form with field validation.
+- **Status updates** (`Pending` → `Paid` → `Shipped`) directly from the table.
+- **Grand total**, calculated as the sum of `price × quantity` across all orders.
+- **Responsive design**: on narrow screens (≤640px) the table reflows into stacked cards.
 
-## React Compiler
+## Tech stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- [React 19](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [Vite 7](https://vite.dev/) as bundler and dev server
+- [React Compiler](https://react.dev/learn/react-compiler) enabled via `babel-plugin-react-compiler`
+- ESLint with `typescript-eslint`
 
-Note: This will impact Vite dev & build performances.
+## Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js 20+ and npm
+- The **Order Tracker API** backend running (see [API.md](./API.md))
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+cp .env.example .env   # adjust VITE_API_BASE_URL if needed
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The app will be available at `http://localhost:5173` (Vite's default port).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Environment variables
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Variable | Description | Default value |
+| --- | --- | --- |
+| `VITE_API_BASE_URL` | Base URL of the backend (no trailing slash, no `/api` prefix) | `http://localhost:3000` |
+
+## Available scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Starts the dev server with HMR |
+| `npm run build` | Compiles TypeScript and builds the production bundle into `dist/` |
+| `npm run preview` | Serves the production build locally |
+| `npm run lint` | Runs ESLint on the project |
+
+## Project structure
+
 ```
+src/
+├── api/ordersApi.ts        # HTTP client for the backend (fetch/create/update)
+├── components/
+│   ├── OrderForm.tsx        # Form to create orders (with validation)
+│   └── OrderTable.tsx       # Orders table and status updates
+├── utils/format.ts          # Currency formatting
+├── types.ts                  # Shared types: Order, OrderStatus, NewOrderInput
+└── App.tsx                   # Root component: global state, data loading, and total
+```
+
+## Form validation
+
+- **Customer**: 3 to 40 characters.
+- **Item**: 3 to 20 characters.
+- **Quantity**: integer ≥ 1 and ≤ 1000.
+- **Price**: positive number ≤ 100000.
+
+## API
+
+This application consumes the API documented in [API.md](./API.md). The backend must be reachable at the URL configured in `VITE_API_BASE_URL`.

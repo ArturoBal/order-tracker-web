@@ -1,17 +1,17 @@
-# Order Tracker API — Contrato para Frontend
+# Order Tracker API — Frontend Contract
 
-Base URL: `http://localhost:3000` (configurable vía variable de entorno `PORT`)
+Base URL: `http://localhost:3000` (configurable via the `PORT` environment variable)
 
-Todas las respuestas y peticiones son JSON (`Content-Type: application/json`).
+All requests and responses are JSON (`Content-Type: application/json`).
 
-## Validación
+## Validation
 
-El backend usa un `ValidationPipe` global con `whitelist: true` y `forbidNonWhitelisted: true`:
+The backend uses a global `ValidationPipe` with `whitelist: true` and `forbidNonWhitelisted: true`:
 
-- Cualquier campo no definido en el DTO correspondiente provoca **400 Bad Request**.
-- Los campos definidos se validan según las reglas indicadas más abajo.
+- Any field not defined in the corresponding DTO causes a **400 Bad Request**.
+- Defined fields are validated according to the rules below.
 
-## Tipos
+## Types
 
 ```typescript
 type OrderStatus = 'Pending' | 'Paid' | 'Shipped';
@@ -20,27 +20,27 @@ interface Order {
   id: string;          // UUID
   customerName: string;
   item: string;
-  quantity: number;     // entero >= 1
-  price: number;        // > 0, hasta 2 decimales
+  quantity: number;     // integer between 1 and 1000
+  price: number;        // > 0 and <= 100000, up to 2 decimals
   status: OrderStatus;  // default: 'Pending'
 }
 
-// Body para crear una orden
+// Body to create an order
 interface CreateOrderDto {
-  customerName: string;  // requerido, no vacío
-  item: string;          // requerido, no vacío
-  quantity: number;       // requerido, >= 1
-  price: number;          // requerido, > 0
-  status?: OrderStatus;   // opcional, default 'Pending'
+  customerName: string;  // required, 3 to 40 characters
+  item: string;          // required, 3 to 20 characters
+  quantity: number;       // required, between 1 and 1000
+  price: number;          // required, > 0 and <= 100000
+  status?: OrderStatus;   // optional, default 'Pending'
 }
 
-// Body para actualizar una orden (todos los campos opcionales)
+// Body to update an order (all fields optional)
 type UpdateOrderDto = Partial<CreateOrderDto>;
 ```
 
-## Errores
+## Errors
 
-Formato estándar de error (filtro por defecto de NestJS):
+Standard error format (NestJS default filter):
 
 ```json
 {
@@ -50,7 +50,7 @@ Formato estándar de error (filtro por defecto de NestJS):
 }
 ```
 
-En errores de validación del **body**, `message` es un arreglo de strings con cada problema:
+For **body** validation errors, `message` is an array of strings, one per issue:
 
 ```json
 {
@@ -62,7 +62,7 @@ En errores de validación del **body**, `message` es un arreglo de strings con c
 }
 ```
 
-Si `:id` no es un UUID válido, `message` es un string:
+If `:id` is not a valid UUID, `message` is a string:
 
 ```json
 {
@@ -72,16 +72,16 @@ Si `:id` no es un UUID válido, `message` es un string:
 }
 ```
 
-| statusCode | Cuándo ocurre |
+| statusCode | When it occurs |
 | --- | --- |
-| 400 | Body inválido, campo extra no permitido, o `:id` no es un UUID válido |
-| 404 | No existe una orden con el `id` indicado |
+| 400 | Invalid body, extra field not allowed, or `:id` is not a valid UUID |
+| 404 | No order exists with the given `id` |
 
 ---
 
 ## Endpoints
 
-### `POST /orders` — Crear una orden
+### `POST /orders` — Create an order
 
 **Body** (`CreateOrderDto`):
 
@@ -95,9 +95,9 @@ Si `:id` no es un UUID válido, `message` es un string:
 }
 ```
 
-> `status` es opcional; si se omite, se guarda como `"Pending"`.
+> `status` is optional; if omitted, it is saved as `"Pending"`.
 
-**Respuesta** — `201 Created`:
+**Response** — `201 Created`:
 
 ```json
 {
@@ -112,9 +112,9 @@ Si `:id` no es un UUID válido, `message` es un string:
 
 ---
 
-### `GET /orders` — Listar todas las órdenes
+### `GET /orders` — List all orders
 
-**Respuesta** — `200 OK`:
+**Response** — `200 OK`:
 
 ```json
 [
@@ -131,11 +131,11 @@ Si `:id` no es un UUID válido, `message` es un string:
 
 ---
 
-### `GET /orders/:id` — Obtener una orden por id
+### `GET /orders/:id` — Get an order by id
 
-- `:id` debe ser un UUID válido (si no, `400 Bad Request`).
+- `:id` must be a valid UUID (otherwise, `400 Bad Request`).
 
-**Respuesta** — `200 OK`:
+**Response** — `200 OK`:
 
 ```json
 {
@@ -148,13 +148,13 @@ Si `:id` no es un UUID válido, `message` es un string:
 }
 ```
 
-- `404 Not Found` si no existe una orden con ese `id`.
+- `404 Not Found` if no order exists with that `id`.
 
 ---
 
-### `PATCH /orders/:id` — Actualizar una orden
+### `PATCH /orders/:id` — Update an order
 
-**Body** (`UpdateOrderDto`, todos los campos opcionales — enviar solo los que cambian):
+**Body** (`UpdateOrderDto`, all fields optional — send only the ones that change):
 
 ```json
 {
@@ -162,7 +162,7 @@ Si `:id` no es un UUID válido, `message` es un string:
 }
 ```
 
-**Respuesta** — `200 OK`: la orden completa actualizada.
+**Response** — `200 OK`: the full updated order.
 
 ```json
 {
@@ -175,24 +175,24 @@ Si `:id` no es un UUID válido, `message` es un string:
 }
 ```
 
-- `404 Not Found` si no existe una orden con ese `id`.
+- `404 Not Found` if no order exists with that `id`.
 
 ---
 
-### `DELETE /orders/:id` — Eliminar una orden
+### `DELETE /orders/:id` — Delete an order
 
-**Respuesta** — `200 OK`, sin body.
+**Response** — `200 OK`, no body.
 
-- `404 Not Found` si no existe una orden con ese `id`.
+- `404 Not Found` if no order exists with that `id`.
 
 ---
 
-## Ejemplo de uso (fetch)
+## Usage example (fetch)
 
 ```typescript
 const API_URL = 'http://localhost:3000';
 
-// Crear orden
+// Create order
 async function createOrder(data: CreateOrderDto): Promise<Order> {
   const res = await fetch(`${API_URL}/orders`, {
     method: 'POST',
@@ -203,20 +203,20 @@ async function createOrder(data: CreateOrderDto): Promise<Order> {
   return res.json();
 }
 
-// Listar órdenes
+// List orders
 async function getOrders(): Promise<Order[]> {
   const res = await fetch(`${API_URL}/orders`);
   return res.json();
 }
 
-// Obtener una orden
+// Get an order
 async function getOrder(id: string): Promise<Order> {
   const res = await fetch(`${API_URL}/orders/${id}`);
   if (!res.ok) throw await res.json();
   return res.json();
 }
 
-// Actualizar estado de una orden
+// Update an order's status
 async function updateOrderStatus(id: string, status: OrderStatus): Promise<Order> {
   const res = await fetch(`${API_URL}/orders/${id}`, {
     method: 'PATCH',
@@ -227,7 +227,7 @@ async function updateOrderStatus(id: string, status: OrderStatus): Promise<Order
   return res.json();
 }
 
-// Eliminar una orden
+// Delete an order
 async function deleteOrder(id: string): Promise<void> {
   const res = await fetch(`${API_URL}/orders/${id}`, { method: 'DELETE' });
   if (!res.ok) throw await res.json();
