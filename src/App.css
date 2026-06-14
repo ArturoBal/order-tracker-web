@@ -1,0 +1,295 @@
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.app__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.app__header h1 {
+  margin: 0;
+  font-size: 1.85rem;
+}
+
+.app__total {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background-color: var(--color-surface-accent);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 0.85rem 1.5rem;
+  min-width: 150px;
+}
+
+.app__total-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.app__total-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+/* Add order form */
+.order-form {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.order-form h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.order-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-field label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.form-field input {
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.form-field input:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
+}
+
+.form-field input[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
+.form-field__error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-danger);
+}
+
+.order-form > button {
+  align-self: flex-start;
+}
+
+.form-error {
+  margin: 0;
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--radius-control);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.form-error p {
+  margin: 0;
+}
+
+.form-error button {
+  background-color: var(--color-danger);
+}
+
+.form-error button:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+/* Orders list */
+.orders-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.orders-section h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.status-message {
+  color: var(--color-text-muted);
+}
+
+.empty-state {
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 2.5rem 1rem;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.order-table-wrapper {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.order-table th,
+.order-table td {
+  text-align: left;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.order-table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.order-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.order-table select {
+  max-width: 100%;
+  padding: 0.45rem 0.7rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+.order-table select:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
+}
+
+/* Fixed column widths so long customer/item text wraps instead of
+   pushing the Status column outside the card. Only applies to the
+   table layout (phones use the stacked card layout below). */
+@media (min-width: 641px) {
+  .order-table {
+    table-layout: fixed;
+  }
+
+  .order-table th:nth-child(1),
+  .order-table td:nth-child(1) {
+    width: 24%;
+  }
+
+  .order-table th:nth-child(2),
+  .order-table td:nth-child(2) {
+    width: 16%;
+  }
+
+  .order-table th:nth-child(3),
+  .order-table td:nth-child(3) {
+    width: 10%;
+  }
+
+  .order-table th:nth-child(4),
+  .order-table td:nth-child(4) {
+    width: 14%;
+  }
+
+  .order-table th:nth-child(5),
+  .order-table td:nth-child(5) {
+    width: 14%;
+  }
+
+  .order-table th:nth-child(6),
+  .order-table td:nth-child(6) {
+    width: 22%;
+  }
+
+  .order-table select {
+    width: 100%;
+  }
+}
+
+/* Stack the table into cards on narrow (phone) screens */
+@media (max-width: 640px) {
+  .app__total {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .order-table thead {
+    display: none;
+  }
+
+  .order-table,
+  .order-table tbody,
+  .order-table tr,
+  .order-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .order-table tr {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .order-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .order-table td {
+    border-bottom: none;
+    padding: 0.3rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .order-table td::before {
+    content: attr(data-label);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+}
