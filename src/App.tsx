@@ -1,109 +1,74 @@
-import { useEffect, useMemo, useState } from 'react';
-import OrderForm from './components/OrderForm';
-import OrderTable from './components/OrderTable';
-import { ApiError, createOrder, fetchOrders, updateOrderStatus } from './api/ordersApi';
-import type { NewOrderInput, Order, OrderStatus } from './types';
-import { formatCurrency } from './utils/format';
+import { useEffect, useState } from 'react';
+import { useAuth } from './context/AuthContext';
+import LoginView from './views/LoginView';
+import OrdersView from './views/OrdersView';
+import AdminView from './views/AdminView';
 import './App.css';
 
-function App() {
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [actionError, setActionError] = useState<string | null>(null);
-  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
-  const [reloadToken, setReloadToken] = useState(0);
+type View = 'orders' | 'admin';
 
+function AuthenticatedApp() {
+  const { logout, user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  const [view, setView] = useState<View>('orders');
+
+  // Guard: if the active view requires admin but user is not admin, fall back
   useEffect(() => {
-    let cancelled = false;
-
-    fetchOrders()
-      .then((data) => {
-        if (!cancelled) {
-          setOrders(data);
-          setLoadError(null);
-        }
-      })
-      .catch((err: unknown) => {
-        if (!cancelled) {
-          setLoadError(err instanceof ApiError ? err.message : 'Could not load orders.');
-        }
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [reloadToken]);
-
-  const total = useMemo(() => orders.reduce((sum, order) => sum + order.price * order.quantity, 0), [orders]);
-
-  async function handleAddOrder(input: NewOrderInput) {
-    const created = await createOrder(input);
-    setOrders((prev) => [...prev, created]);
-  }
-
-  async function handleStatusChange(id: string, status: OrderStatus) {
-    const previousOrders = orders;
-    setOrders((prev) => prev.map((order) => (order.id === id ? { ...order, status } : order)));
-    setUpdatingOrderId(id);
-    setActionError(null);
-
-    try {
-      const updated = await updateOrderStatus(id, status);
-      setOrders((prev) => prev.map((order) => (order.id === id ? updated : order)));
-    } catch (err) {
-      setOrders(previousOrders);
-      setActionError(err instanceof ApiError ? err.message : 'Could not update the order status.');
-    } finally {
-      setUpdatingOrderId(null);
-    }
-  }
+    if (view === 'admin' && !isAdmin) setView('orders');
+  }, [view, isAdmin]);
 
   return (
-    <div className="app">
-      <header className="app__header">
-        <h1>Order Tracker</h1>
-        <div className="app__total">
-          <span className="app__total-label">Total</span>
-          <strong className="app__total-value">{formatCurrency(total)}</strong>
-        </div>
-      </header>
-
-      <OrderForm onAddOrder={handleAddOrder} />
-
-      {actionError && (
-        <p className="form-error" role="alert">
-          {actionError}
-        </p>
-      )}
-
-      <section className="orders-section">
-        <h2>Orders</h2>
-        {loading && <p className="status-message">Loading orders...</p>}
-        {loadError && (
-          <div className="form-error" role="alert">
-            <p>{loadError}</p>
+    <div className="app-shell">
+      <header className="app-nav">
+        <span className="app-nav__brand">Order Tracker</span>
+        <nav className="app-nav__links">
+          {user && (
+            <span className="app-nav__user">
+              {user.name}
+              <span className={`app-nav__role app-nav__role--${user.role}`}>{user.role}</span>
+            </span>
+          )}
+          <button
+            type="button"
+            className={`app-nav__btn${view === 'orders' ? ' app-nav__btn--active' : ''}`}
+            onClick={() => setView('orders')}
+          >
+            Ordenes
+          </button>
+          {isAdmin && (
             <button
               type="button"
-              onClick={() => {
-                setLoading(true);
-                setLoadError(null);
-                setReloadToken((token) => token + 1);
-              }}
+              className={`app-nav__btn${view === 'admin' ? ' app-nav__btn--active' : ''}`}
+              onClick={() => setView('admin')}
             >
-              Retry
+              Admin
             </button>
-          </div>
-        )}
-        {!loading && !loadError && (
-          <OrderTable orders={orders} onStatusChange={handleStatusChange} updatingOrderId={updatingOrderId} />
-        )}
-      </section>
+          )}
+          <button type="button" className="app-nav__btn app-nav__btn--logout" onClick={logout}>
+            Cerrar sesion
+          </button>
+        </nav>
+      </header>
+
+      <main className="app-content">
+        {view === 'admin' && isAdmin ? <AdminView /> : <OrdersView />}
+      </main>
     </div>
   );
 }
 
-export default App;
+export default function App() {
+  const { token, userLoading } = useAuth();
+
+  if (!token) return <LoginView />;
+
+  if (userLoading) {
+    return (
+      <div className="loading-screen">
+        <p>Cargando...</p>
+      </div>
+    );
+  }
+
+  return <AuthenticatedApp />;
+}

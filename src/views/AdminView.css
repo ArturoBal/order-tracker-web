@@ -1,0 +1,251 @@
+.admin {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin__header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+/* Form panel */
+.admin__form-panel {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.admin__form-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.admin__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.admin__form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.admin__form select {
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  width: 100%;
+}
+
+.admin__form select:focus-visible {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.25);
+}
+
+.admin__form-error {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-control);
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+  font-size: 0.9rem;
+}
+
+.admin__form-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin__btn-cancel {
+  background-color: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+}
+
+.admin__btn-cancel:hover:not(:disabled) {
+  background-color: var(--color-border);
+  color: var(--color-text);
+}
+
+/* Table */
+.admin__table-wrapper {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.admin__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin__table th,
+.admin__table td {
+  text-align: left;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.admin__table th {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.admin__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Role badge */
+.admin__role-badge {
+  display: inline-block;
+  padding: 0.25em 0.7em;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin__role-badge--admin {
+  background-color: var(--color-surface-accent);
+  color: var(--color-primary-hover);
+}
+
+.admin__role-badge--user {
+  background-color: #f3f4f6;
+  color: var(--color-text-muted);
+}
+
+/* Action buttons */
+.admin__actions-cell {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.admin__btn-edit,
+.admin__btn-delete {
+  padding: 0.4em 1em;
+  font-size: 0.875rem;
+}
+
+.admin__btn-edit {
+  background-color: transparent;
+  color: var(--color-primary-hover);
+  border: 1px solid var(--color-primary);
+}
+
+.admin__btn-edit:hover:not(:disabled) {
+  background-color: var(--color-surface-accent);
+}
+
+.admin__btn-delete {
+  background-color: transparent;
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.admin__btn-delete:hover:not(:disabled) {
+  background-color: var(--color-danger-bg);
+}
+
+/* Responsive */
+@media (min-width: 641px) {
+  .admin__table {
+    table-layout: fixed;
+  }
+
+  .admin__table th:nth-child(1),
+  .admin__table td:nth-child(1) {
+    width: 25%;
+  }
+
+  .admin__table th:nth-child(2),
+  .admin__table td:nth-child(2) {
+    width: 35%;
+  }
+
+  .admin__table th:nth-child(3),
+  .admin__table td:nth-child(3) {
+    width: 15%;
+  }
+
+  .admin__table th:nth-child(4),
+  .admin__table td:nth-child(4) {
+    width: 25%;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin__table thead {
+    display: none;
+  }
+
+  .admin__table,
+  .admin__table tbody,
+  .admin__table tr,
+  .admin__table td {
+    display: block;
+    width: 100%;
+  }
+
+  .admin__table tr {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .admin__table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .admin__table td {
+    border-bottom: none;
+    padding: 0.3rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .admin__table td::before {
+    content: attr(data-label);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .admin__actions-cell {
+    justify-content: flex-end;
+  }
+}

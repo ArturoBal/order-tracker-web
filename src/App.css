@@ -1,3 +1,137 @@
+/* App shell */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-nav {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.app-nav__brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.app-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.app-nav__btn {
+  padding: 0.45em 1.1em;
+  font-size: 0.9rem;
+  border-radius: var(--radius-control);
+  background-color: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid transparent;
+}
+
+.app-nav__btn:hover:not(:disabled) {
+  background-color: var(--color-surface-accent);
+  color: var(--color-heading);
+}
+
+.app-nav__btn--active {
+  background-color: var(--color-surface-accent);
+  color: var(--color-primary-hover);
+  border-color: var(--color-primary);
+}
+
+.app-nav__btn--active:hover:not(:disabled) {
+  background-color: var(--color-surface-accent);
+  color: var(--color-primary-hover);
+}
+
+.app-nav__btn--logout {
+  color: var(--color-danger);
+}
+
+.app-nav__btn--logout:hover:not(:disabled) {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.app-nav__user {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding-right: 0.5rem;
+  border-right: 1px solid var(--color-border);
+  margin-right: 0.25rem;
+}
+
+.app-nav__role {
+  display: inline-block;
+  padding: 0.15em 0.55em;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.app-nav__role--admin {
+  background-color: var(--color-surface-accent);
+  color: var(--color-primary-hover);
+}
+
+.app-nav__role--user {
+  background-color: #f3f4f6;
+  color: var(--color-text-muted);
+}
+
+/* Loading screen shown while fetching user details after boot */
+.loading-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+}
+
+.app-content {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+/* Orders header (replaces old app__header inside orders view) */
+.orders-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.orders-header h2 {
+  margin: 0;
+  font-size: 1.85rem;
+}
+
 .app {
   max-width: 960px;
   margin: 0 auto;

@@ -17,3 +17,21 @@ export interface NewOrderInput {
   quantity: number;
   price: number;
 }
+
+export type UserRole = 'user' | 'admin';
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+}
+
+export interface CreateUserDto {
+  name: string;
+  email: string;
+  password: string;
+  role?: UserRole;
+}
+
+export type UpdateUserDto = Partial<Pick<CreateUserDto, 'name' | 'email' | 'role'>>;
