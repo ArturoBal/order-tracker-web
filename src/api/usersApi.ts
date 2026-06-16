@@ -14,12 +14,13 @@ export function createUser(data: CreateUserDto): Promise<User> {
 }
 
 export function updateUser(id: string, data: UpdateUserDto): Promise<User> {
-  return apiFetch<User>(`/users/${encodeURIComponent(id)}`, {
-    method: 'PATCH',
-    body: JSON.stringify(data),
-  });
+  return apiFetch<User>(
+    `/users/${encodeURIComponent(id)}`,
+    { method: 'PATCH', body: JSON.stringify(data) },
+    true,
+  );
 }
 
 export function deleteUser(id: string): Promise<void> {
-  return apiFetch<void>(`/users/${encodeURIComponent(id)}`, { method: 'DELETE' });
+  return apiFetch<void>(`/users/${encodeURIComponent(id)}`, { method: 'DELETE' }, true);
 }
